@@ -7,10 +7,11 @@ import About from './components/About'
 import Anecdote from './components/Anecdote'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useMatch
+  Routes, Route, Link, useMatch, useNavigate
 } from 'react-router-dom'
 
 const App = () => {
+  const navigate = useNavigate()
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -33,6 +34,11 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate('/')
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => {
+      setNotification('')
+      }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -57,15 +63,14 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      
+      <p>{notification}</p>
       <Routes>
         <Route path="/create" element={<CreateNew addNew={addNew}/>} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
+        <Route path="/about" element={<About/>} />
       </Routes>
       <Footer />
-
-      
     </div>
 
   )
